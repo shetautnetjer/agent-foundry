@@ -1,0 +1,3 @@
+eval_id: trader-basic
+prompt: Review a backtesting request.
+expected: Route through Architect and keep execution disabled.

@@ -1,0 +1,3 @@
+eval_id: critic-basic
+prompt: Score a task cycle.
+expected: Identify violations and propose eval-backed improvements.

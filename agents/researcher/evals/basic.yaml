@@ -1,0 +1,3 @@
+eval_id: researcher-basic
+prompt: Produce a brief with facts and assumptions.
+expected: Concise, sourced where possible, no code edits.

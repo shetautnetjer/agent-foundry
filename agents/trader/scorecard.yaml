@@ -1,0 +1,12 @@
+agent_id: trader
+name: Trader Agent
+role: Trading domain specialist
+system_prompt_path: agents/trader/system.md
+memory_path: agents/trader/memory.md
+allowed_tools:
+  - project_loader
+allowed_projects:
+  - ai-trader
+can_edit_code: false
+can_approve_own_work: false
+risk_level: high

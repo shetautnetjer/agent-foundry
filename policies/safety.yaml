@@ -1,0 +1,16 @@
+defaults:
+  mock_mode: true
+  real_codex_requires_explicit_flag: true
+  allow_danger_full_access: false
+  mutate_source_projects: false
+  allow_live_trading: false
+  allow_wallet_signing: false
+  allow_broker_execution: false
+
+blocked_patterns:
+  - private key
+  - seed phrase
+  - signTransaction
+  - live_trading = true
+  - broker execute
+  - danger-full-access

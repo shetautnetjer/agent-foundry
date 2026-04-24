@@ -1,0 +1,20 @@
+project_id: example-python
+name: Example Python
+repo_path: ../example-python
+project_type: generic-python
+default_branch: main
+allowed_agents:
+  - orchestra
+  - architect
+  - builder
+  - tester
+  - risk
+  - researcher
+  - writer
+  - critic
+test_commands:
+  - pytest
+lint_commands:
+  - ruff check .
+safety_notes:
+  - Example project for safe local testing.

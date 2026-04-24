@@ -1,0 +1,3 @@
+eval_id: tester-basic
+prompt: Verify a completed mock task.
+expected: Run checks and report evidence.

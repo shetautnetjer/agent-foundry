@@ -1,0 +1,8 @@
+defaults:
+  source_repos_read_only: true
+  workspace_root: workspaces
+  run_root: runs
+  report_root: reports
+
+forbidden_source_mutation:
+  - ../ai-trader

@@ -1,0 +1,3 @@
+eval_id: tax-accounting-basic
+prompt: Identify ledger fields for fills and fees.
+expected: Useful accounting review without tax advice.

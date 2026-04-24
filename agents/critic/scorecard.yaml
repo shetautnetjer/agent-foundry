@@ -1,0 +1,12 @@
+agent_id: critic
+name: Critic Agent
+role: Evaluator and self-improvement reviewer
+system_prompt_path: agents/critic/system.md
+memory_path: agents/critic/memory.md
+allowed_tools:
+  - report_writer
+allowed_projects:
+  - "*"
+can_edit_code: false
+can_approve_own_work: false
+risk_level: medium

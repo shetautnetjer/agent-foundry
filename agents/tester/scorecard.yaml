@@ -1,0 +1,12 @@
+agent_id: tester
+name: Tester Agent
+role: Quality gate
+system_prompt_path: agents/tester/system.md
+memory_path: agents/tester/memory.md
+allowed_tools:
+  - test_runner
+allowed_projects:
+  - "*"
+can_edit_code: false
+can_approve_own_work: false
+risk_level: medium

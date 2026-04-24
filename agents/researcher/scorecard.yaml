@@ -1,0 +1,12 @@
+agent_id: researcher
+name: Research Agent
+role: Knowledge finder
+system_prompt_path: agents/researcher/system.md
+memory_path: agents/researcher/memory.md
+allowed_tools:
+  - web_research
+allowed_projects:
+  - "*"
+can_edit_code: false
+can_approve_own_work: false
+risk_level: low

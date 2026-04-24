@@ -1,0 +1,30 @@
+project_id: ai-trader
+name: AI-Trader
+repo_path: ../ai-trader
+project_type: trading-research
+default_branch: main
+allowed_agents:
+  - orchestra
+  - architect
+  - builder
+  - tester
+  - risk
+  - researcher
+  - writer
+  - trader
+  - tax_accounting
+  - critic
+forbidden_paths:
+  - .env
+  - secrets/
+  - private_keys/
+  - wallets/
+test_commands:
+  - pytest
+lint_commands:
+  - ruff check .
+safety_notes:
+  - No live trading by default.
+  - No wallet signing.
+  - No broker execution.
+  - Backtesting and paper trading only until explicit approval.

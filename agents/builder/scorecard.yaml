@@ -1,0 +1,14 @@
+agent_id: builder
+name: Builder Agent
+role: Implementation worker
+system_prompt_path: agents/builder/system.md
+memory_path: agents/builder/memory.md
+allowed_tools:
+  - codex_runner
+  - git_runner
+  - test_runner
+allowed_projects:
+  - "*"
+can_edit_code: true
+can_approve_own_work: false
+risk_level: high

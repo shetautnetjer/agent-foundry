@@ -1,0 +1,12 @@
+agent_id: risk
+name: Risk Agent
+role: Safety and security gate
+system_prompt_path: agents/risk/system.md
+memory_path: agents/risk/memory.md
+allowed_tools:
+  - safety_checker
+allowed_projects:
+  - "*"
+can_edit_code: false
+can_approve_own_work: false
+risk_level: critical

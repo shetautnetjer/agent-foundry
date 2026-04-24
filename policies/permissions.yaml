@@ -1,0 +1,58 @@
+default:
+  can_edit_code: false
+  can_run_shell: false
+  can_access_network: false
+  can_commit: false
+  can_modify_policies: false
+
+agents:
+  orchestra:
+    can_edit_code: false
+    can_run_shell: false
+    can_commit: false
+  architect:
+    can_edit_code: false
+    can_run_shell: false
+    can_commit: false
+  builder:
+    can_edit_code: true
+    can_run_shell: true
+    can_commit: false
+    can_modify_policies: false
+    allowed_shell_commands:
+      - pytest
+      - python
+      - uv
+      - pip
+      - ruff
+      - mypy
+      - git diff
+      - git status
+  tester:
+    can_edit_code: false
+    can_run_shell: true
+    can_commit: false
+  risk:
+    can_edit_code: false
+    can_run_shell: false
+    can_commit: false
+  writer:
+    can_edit_code: true
+    docs_only: true
+    can_commit: false
+  researcher:
+    can_edit_code: false
+    can_access_network: true
+    can_commit: false
+  trader:
+    can_edit_code: false
+    can_run_shell: false
+    can_commit: false
+  tax_accounting:
+    can_edit_code: false
+    can_run_shell: false
+    can_commit: false
+  critic:
+    can_edit_code: false
+    can_run_shell: false
+    can_commit: false

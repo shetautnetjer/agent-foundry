@@ -1,0 +1,12 @@
+agent_id: architect
+name: Architect Agent
+role: Software architect
+system_prompt_path: agents/architect/system.md
+memory_path: agents/architect/memory.md
+allowed_tools:
+  - project_loader
+allowed_projects:
+  - "*"
+can_edit_code: false
+can_approve_own_work: false
+risk_level: medium

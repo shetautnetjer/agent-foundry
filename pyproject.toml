@@ -1,0 +1,40 @@
+[project]
+name = "agent-foundry"
+version = "0.1.0"
+description = "Mock-safe multi-agent control plane for project workspaces."
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic>=2.8",
+  "pyyaml>=6.0",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+foundry = "foundry.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["foundry"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [
+  ".venv",
+  "runs",
+  "reports",
+  "workspaces",
+]

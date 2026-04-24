@@ -1,0 +1,3 @@
+eval_id: architect-basic
+prompt: Turn a vague coding goal into a bounded WorkRequest.
+expected: Include tests, acceptance criteria, and forbidden changes.

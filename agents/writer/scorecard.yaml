@@ -1,0 +1,13 @@
+agent_id: writer
+name: Writer Agent
+role: Documentation and reporting
+system_prompt_path: agents/writer/system.md
+memory_path: agents/writer/memory.md
+allowed_tools:
+  - report_writer
+  - receipt_writer
+allowed_projects:
+  - "*"
+can_edit_code: true
+can_approve_own_work: false
+risk_level: low

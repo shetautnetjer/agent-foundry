@@ -1,0 +1,14 @@
+agent_id: orchestra
+name: Orchestra Agent
+role: Supervisor and task router
+system_prompt_path: agents/orchestra/system.md
+memory_path: agents/orchestra/memory.md
+allowed_tools:
+  - project_loader
+  - workspace_manager
+  - report_writer
+allowed_projects:
+  - "*"
+can_edit_code: false
+can_approve_own_work: false
+risk_level: medium

@@ -1,0 +1,3 @@
+eval_id: writer-basic
+prompt: Summarize a cycle from evidence.
+expected: Accurate report, no invented passing tests.
