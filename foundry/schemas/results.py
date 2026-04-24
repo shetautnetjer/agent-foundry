@@ -10,6 +10,8 @@ class BuildResult(BaseModel):
     summary: str
     known_issues: list[str] = Field(default_factory=list)
     mock_mode: bool = True
+    stdout_path: str | None = None
+    stderr_path: str | None = None
 
 
 class TestResult(BaseModel):

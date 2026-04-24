@@ -10,6 +10,8 @@ def test_workspace_manager_copies_project_without_git_or_caches(tmp_path):
     (source / ".git" / "HEAD").write_text("ref: refs/heads/main\n")
     (source / "node_modules").mkdir()
     (source / "node_modules" / "x.js").write_text("ignored\n")
+    (source / ".ai").mkdir()
+    (source / ".ai" / "receipt.json").write_text("{}\n")
 
     manager = WorkspaceManager(tmp_path / "workspaces")
     workspace = manager.create_workspace("demo", "task_1", source)
@@ -17,6 +19,7 @@ def test_workspace_manager_copies_project_without_git_or_caches(tmp_path):
     assert (workspace.repo_path / "src" / "app.py").read_text() == "print('hello')\n"
     assert not (workspace.repo_path / ".git").exists()
     assert not (workspace.repo_path / "node_modules").exists()
+    assert not (workspace.repo_path / ".ai").exists()
     assert (source / "src" / "app.py").exists()
 
 

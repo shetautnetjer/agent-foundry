@@ -1,0 +1,3 @@
+# Agent Foundry is mock-safe by default.
+# Copy to foundry.yaml and set true only when you want real Codex workspace runs.
+enable_real_codex: false

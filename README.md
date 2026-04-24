@@ -11,6 +11,7 @@ uv sync
 uv run pytest
 uv run python -m foundry.cli doctor
 uv run python -m foundry.cli status
+uv run python -m foundry.cli codex-status
 uv run python -m foundry.cli list-agents
 uv run python -m foundry.cli list-projects
 uv run python -m foundry.cli run-cycle --project ai-trader --task "Inspect repo and suggest next safe build step"
@@ -31,13 +32,40 @@ Mock-safe mode is the default. `run-cycle` creates an isolated workspace, writes
 
 ## Real Codex Mode
 
-Real Codex mode is not used by default and is not used in tests. The wrapper can build a command shaped like:
+Real Codex mode is not used by default and is not used in tests. V0.1.2 can run Codex only inside `workspaces/<project_id>/<task_id>/repo` when the user explicitly opts in.
+
+Enable it for one command:
 
 ```bash
-codex exec --full-auto --json -C <workspace> -
+FOUNDRY_ENABLE_REAL_CODEX=1 uv run python -m foundry.cli run-cycle \
+  --project ai-trader \
+  --task "Make a tiny docs-only change in the workspace and produce a diff" \
+  --real-codex
 ```
 
-It only runs when explicitly enabled with configuration or `FOUNDRY_ENABLE_REAL_CODEX=1`. V0.1 never uses `danger-full-access`.
+Or create `foundry.yaml`:
+
+```yaml
+enable_real_codex: true
+```
+
+Check readiness without running Codex:
+
+```bash
+uv run python -m foundry.cli codex-status
+```
+
+The wrapper builds a command shaped like:
+
+```bash
+codex exec --full-auto --sandbox workspace-write --ephemeral --ignore-user-config --ignore-rules --skip-git-repo-check --json -C <workspace> -
+```
+
+It passes a generated Builder prompt over stdin, captures stdout to `runs/<task_id>/codex_stdout.jsonl`, captures stderr to `runs/<task_id>/codex_stderr.log`, writes a workspace diff to `runs/<task_id>/diff.patch`, then sends the result through safety review, report writing, and receipts.
+
+V0.1.2 also snapshots the registered source repo family before and after real Codex runs. If the source repo is dirty before the run, Foundry refuses to start Codex. If the source repo changes during the run, Foundry writes `runs/<task_id>/source_guard.json`, blocks risk with `source-mutation-detected`, and marks the task for repair.
+
+Real Codex mode still does not apply patches to the source repo. Use the manual patch promotion commands after inspecting the diff.
 
 ## Unsupported Dangerous Modes
 
@@ -66,6 +94,7 @@ Generated runtime output is ignored:
 - `runs/<task_id>/events.jsonl`
 - `runs/<task_id>/task_packet.json`
 - `runs/<task_id>/risk_assessment.json`
+- `runs/<task_id>/source_guard.json` for real Codex source-mutation checks
 - `runs/<task_id>/diff.patch`
 - `runs/<task_id>/receipt.json`
 - `reports/<task_id>.md`

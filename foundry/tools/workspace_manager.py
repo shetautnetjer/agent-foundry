@@ -7,6 +7,7 @@ from foundry.schemas.workspaces import WorkspaceInfo
 
 
 IGNORED_NAMES = {
+    ".ai",
     ".git",
     ".idea",
     ".pytest_cache",

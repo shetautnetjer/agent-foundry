@@ -17,6 +17,8 @@ class ReceiptWriter:
         status: str,
         summary: str,
         report_path: str,
+        mock_mode: bool = True,
+        real_codex_used: bool = False,
     ) -> Path:
         path = self.run_root / task_id / "receipt.json"
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -27,8 +29,8 @@ class ReceiptWriter:
             "summary": summary,
             "report_path": report_path,
             "created_at": datetime.now(UTC).isoformat(),
-            "mock_mode": True,
-            "real_codex_used": False,
+            "mock_mode": mock_mode,
+            "real_codex_used": real_codex_used,
         }
         path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return path

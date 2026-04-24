@@ -7,7 +7,14 @@ from typing import Annotated
 
 import typer
 
-from foundry.config import artifact_home, foundry_home, real_codex_enabled, required_folders
+from foundry.config import (
+    artifact_home,
+    config_real_codex_enabled,
+    env_real_codex_enabled,
+    foundry_home,
+    real_codex_enabled,
+    required_folders,
+)
 from foundry.graph.runner import run_cycle
 from foundry.tools.promotion import PromotionError, PromotionManager
 from foundry.tools.project_loader import (
@@ -18,7 +25,7 @@ from foundry.tools.project_loader import (
     resolve_project_path,
 )
 
-app = typer.Typer(help="Agent Foundry V0.1.1 control CLI.")
+app = typer.Typer(help="Agent Foundry V0.1.2 control CLI.")
 
 
 def _home() -> Path:
@@ -70,7 +77,7 @@ def doctor() -> None:
         typer.echo(f"ai-trader path exists: {path.exists()}")
         typer.echo(f"ai-trader path: {path}")
 
-    typer.echo(f"Real Codex enabled: {real_codex_enabled()}")
+    typer.echo(f"Real Codex enabled: {real_codex_enabled(home)}")
 
 
 @app.command()
@@ -80,13 +87,31 @@ def status() -> None:
     home = _home()
     agents = load_agents(home)
     projects = load_projects(home)
-    typer.echo("Agent Foundry V0.1.1")
+    typer.echo("Agent Foundry V0.1.2")
     typer.echo(f"Home: {home}")
     typer.echo(f"Artifact home: {_artifact_home()}")
     typer.echo(f"Agents: {len(agents)}")
     typer.echo(f"Projects: {len(projects)}")
     typer.echo("Mock mode default: True")
-    typer.echo(f"Real Codex enabled: {real_codex_enabled()}")
+    typer.echo(f"Real Codex enabled: {real_codex_enabled(home)}")
+
+
+@app.command("codex-status")
+def codex_status() -> None:
+    """Show real Codex runner readiness without running Codex."""
+
+    home = _home()
+    codex_path = shutil.which("codex")
+    env_enabled = env_real_codex_enabled()
+    config_enabled = config_real_codex_enabled(home)
+    enabled = real_codex_enabled(home)
+    typer.echo(f"Codex found: {codex_path is not None}")
+    if codex_path:
+        typer.echo(f"Codex path: {codex_path}")
+    typer.echo(f"FOUNDRY_ENABLE_REAL_CODEX set: {env_enabled}")
+    typer.echo(f"Config enable_real_codex: {config_enabled}")
+    typer.echo("danger-full-access blocked: True")
+    typer.echo(f"Current default runner mode: {'real-codex' if enabled else 'mock'}")
 
 
 @app.command("list-agents")
@@ -126,20 +151,28 @@ def register_project(
 def run_task(
     project: Annotated[str, typer.Option("--project")],
     task: Annotated[str, typer.Option("--task")],
+    real_codex: Annotated[bool, typer.Option("--real-codex")] = False,
 ) -> None:
     """Alias for the V0.1 inspect-only cycle."""
 
-    run_cycle_command(project=project, task=task)
+    run_cycle_command(project=project, task=task, real_codex=real_codex)
 
 
 @app.command("run-cycle")
 def run_cycle_command(
     project: Annotated[str, typer.Option("--project")],
     task: Annotated[str, typer.Option("--task")],
+    real_codex: Annotated[bool, typer.Option("--real-codex")] = False,
 ) -> None:
-    """Run a mock-safe inspect-only cycle."""
+    """Run a mock-safe cycle, or explicit real Codex workspace cycle."""
 
-    artifacts = run_cycle(_home(), _artifact_home(), project_id=project, task=task)
+    artifacts = run_cycle(
+        _home(),
+        _artifact_home(),
+        project_id=project,
+        task=task,
+        real_codex_requested=real_codex,
+    )
     typer.echo(f"Task: {artifacts.task_id}")
     typer.echo(f"Decision: {artifacts.decision}")
     typer.echo(f"Report: {artifacts.report_path}")
