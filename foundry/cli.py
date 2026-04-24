@@ -9,6 +9,7 @@ import typer
 
 from foundry.config import artifact_home, foundry_home, real_codex_enabled, required_folders
 from foundry.graph.runner import run_cycle
+from foundry.tools.promotion import PromotionError, PromotionManager
 from foundry.tools.project_loader import (
     find_project,
     load_agents,
@@ -17,7 +18,7 @@ from foundry.tools.project_loader import (
     resolve_project_path,
 )
 
-app = typer.Typer(help="Agent Foundry V0.1 control CLI.")
+app = typer.Typer(help="Agent Foundry V0.1.1 control CLI.")
 
 
 def _home() -> Path:
@@ -26,6 +27,15 @@ def _home() -> Path:
 
 def _artifact_home() -> Path:
     return artifact_home()
+
+
+def _promotion_manager() -> PromotionManager:
+    return PromotionManager(_home(), _artifact_home())
+
+
+def _block_promotion(exc: PromotionError) -> None:
+    typer.echo(f"Blocked: {exc}")
+    raise typer.Exit(1)
 
 
 @app.command()
@@ -70,7 +80,7 @@ def status() -> None:
     home = _home()
     agents = load_agents(home)
     projects = load_projects(home)
-    typer.echo("Agent Foundry V0.1")
+    typer.echo("Agent Foundry V0.1.1")
     typer.echo(f"Home: {home}")
     typer.echo(f"Artifact home: {_artifact_home()}")
     typer.echo(f"Agents: {len(agents)}")
@@ -147,6 +157,62 @@ def report_latest() -> None:
     latest = reports[-1]
     typer.echo(f"Latest report: {latest}")
     typer.echo(latest.read_text(encoding="utf-8"))
+
+
+@app.command("show-latest-diff")
+def show_latest_diff() -> None:
+    """Show the newest task diff without applying it."""
+
+    try:
+        summary = _promotion_manager().latest_diff()
+    except PromotionError as exc:
+        _block_promotion(exc)
+    typer.echo(f"Task: {summary.task_id}")
+    typer.echo(f"Diff: {summary.diff_path}")
+    if summary.preview:
+        typer.echo("")
+        typer.echo(summary.preview)
+
+
+@app.command("approve-task")
+def approve_task(task_id: Annotated[str, typer.Option("--task-id")]) -> None:
+    """Write approval.json after promotion gates pass."""
+
+    try:
+        path = _promotion_manager().approve_task(task_id)
+    except PromotionError as exc:
+        _block_promotion(exc)
+    typer.echo(f"Approval written: {path}")
+
+
+@app.command("reject-task")
+def reject_task(
+    task_id: Annotated[str, typer.Option("--task-id")],
+    reason: Annotated[str, typer.Option("--reason")] = "",
+) -> None:
+    """Write rejection.json without deleting artifacts."""
+
+    try:
+        path = _promotion_manager().reject_task(task_id, reason=reason)
+    except PromotionError as exc:
+        _block_promotion(exc)
+    typer.echo(f"Rejection written: {path}")
+
+
+@app.command("apply-approved")
+def apply_approved(task_id: Annotated[str, typer.Option("--task-id")]) -> None:
+    """Apply an approved task diff to the source repo after all gates pass."""
+
+    try:
+        result = _promotion_manager().apply_approved(task_id)
+    except PromotionError as exc:
+        _block_promotion(exc)
+    typer.echo(result.message)
+    typer.echo(f"Source repo: {result.source_repo}")
+    typer.echo("Next manual commands:")
+    typer.echo("  git status")
+    typer.echo("  pytest  # or the configured project test command")
+    typer.echo("  git diff")
 
 
 @app.command("improve-agent")

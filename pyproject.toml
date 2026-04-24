@@ -1,6 +1,6 @@
 [project]
 name = "agent-foundry"
-version = "0.1.0"
+version = "0.1.1"
 description = "Mock-safe multi-agent control plane for project workspaces."
 requires-python = ">=3.12"
 dependencies = [
